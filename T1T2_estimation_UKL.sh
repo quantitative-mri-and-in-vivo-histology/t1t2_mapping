@@ -144,7 +144,7 @@ for sub in "${subjects[@]}"; do
 			flirt_ref="RefVolBrain"
 
 			#1. Mask reference volume
-			bet "${RefVolumeFile}" "${Output_directory_fsl}/${flirt_ref}" -R -f 0.3 -g 0 -m
+			bet "${RefVolumeFile}" "${Output_directory_fsl}/${flirt_ref}" -R -f 0 -g 0 -m #This BET is actually not doing any BET at all.
 			echo "Finished FSL BET on reference volume ${RefVolumeFile}"
 
 			#2. Register B1 anatomical volume to reference and then, the transformation
@@ -167,7 +167,7 @@ for sub in "${subjects[@]}"; do
 				echo "B1 map non-existant - please have a pre-calculated B1map."
 			fi
 
-			flirt -cost mutualinfo -dof 12 -interp trilinear -in "${B1anat}" -ref "${Output_directory_fsl}/${flirt_ref}" -omat "${afi2ref}"
+			flirt -cost mutualinfo -dof 6 -interp trilinear -in "${B1anat}" -ref "${Output_directory_fsl}/${flirt_ref}" -omat "${afi2ref}"
 			flirt -interp sinc -in "${B1map}" -ref "${Output_directory_fsl}/${flirt_ref}" -applyxfm -init "${afi2ref}" -out "${Output_directory_fsl}/B1map_Reg.nii"
 			fslmaths "${Output_directory_fsl}/B1map_Reg.nii" -div "${scaleval}" "${Output_directory_fsl}/B1map_Reg_Norm.nii"
 			echo "Applied transformation and interpolated B1 map"
