@@ -26,6 +26,8 @@ import sys
 import json
 from bids import BIDSLayout
 
+bids_info = []
+
 if len(sys.argv) > 1:
 	dataset_path = sys.argv[1]
 else:
@@ -33,22 +35,15 @@ else:
 	sys.exit(1)
 
 layout = BIDSLayout(dataset_path)
-
+# Get all subjects and sessions
 subjects = layout.get_subjects()
+sessions = layout.get_sessions()
 
-for sub in subjects:
-	sessions = layout.get_sessions(subjects = sub)
-	for ses in sessions:
-		runs = layout.get_runs(subject = sub, session = ses)
-		
-		info = {
-			"subject": subjects,
-			"session": sessions,
-			"runs"; [run['run'] for run in runs]
-		}
-		bids_info.append(info)
+# Create a dictionary to store the results
+result = {
+    'subjects': subjects,
+    'sessions': sessions
+}
 
-#with open('bids_info.json', 'w') as json_file:
-#	json.dumps(bids_info, json_file, indent=4)
-
-print(json.dumps(bids_info, json_file, indent=4))
+# Output the result as JSON (this will be captured in the bash script)
+print(json.dumps(result))
