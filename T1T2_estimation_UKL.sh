@@ -75,12 +75,13 @@ for sub in "${subjects[@]}"; do
 		# Add more run files as needed
 
 		# Loop over all found files
-		for file in $spgr_ssfp_files_all; do
+		for file in "${spgr_ssfp_files_all[@]}"; do
+			filename=$(basename "$file")
 			# Check if the file contains 'run-001'
-			if [[ $file =~ run-001 ]]; then
+			if [[ "$filename" == *"_run-1_"* ]]; then
 				run_files_001+=("$file")
 			# Check if the file contains 'run-002'
-			elif [[ $file =~ run-002 ]]; then
+			elif [[ "$filename" == *"_run-2_"* ]]; then
 				run_files_002+=("$file")
 			# Add more conditions for other run numbers if needed
 			else
@@ -103,18 +104,18 @@ for sub in "${subjects[@]}"; do
 			fi
 		
 			Output_directory_fsl="${main_output_directory_fsl}/run-${runInd}"
-			mkdir "${Output_directory_fsl}"
+			mkdir -p "${Output_directory_fsl}"
 			Output_directory_qi="${main_output_directory_qi}/run-${runInd}"	
-			mkdir "${Output_directory_qi}"
+			mkdir -p "${Output_directory_qi}"
 			
 			if [[ $runInd -eq 1 && "${#files_without_run[@]}" -gt 0 ]]; then
 				search_string="*acq-t2Ssfp2A*.gz"
 				spgr_ssfp_files=($(find ${Anatomy_directory} -type f -name ${search_string}))
 			elif [[ $runInd -eq 1 && "${#run_files_001[@]}" -gt 0 ]]; then
-				search_string="*acq-t2Ssfp2A*run-001*.gz"
+				search_string="*acq-t2Ssfp2A*run-1*.gz"
 				spgr_ssfp_files=($(find ${Anatomy_directory} -type f -name ${search_string}))
 			else
-				search_string="*acq-t2Ssfp2A*run-002*.gz"
+				search_string="*acq-t2Ssfp2A*run-2*.gz"
 				spgr_ssfp_files_all=($(find ${Anatomy_directory} -type f -name ${search_string}))
 			fi
 						
