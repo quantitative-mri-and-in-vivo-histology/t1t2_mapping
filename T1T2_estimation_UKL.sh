@@ -39,12 +39,17 @@ sessions=($(echo "$json_output" | jq -r '.sessions[]'))
 
 for sub in "${subjects[@]}"; do
     for sess in "${sessions[@]}"; do
-        echo "Analyzing subject: ${sub}, session: ${sess}"
-
+		
 		SubSess="sub-${sub}/ses-${sess}"
-		echo "${SubSess}"
-				
 		Anatomy_directory="${MainPath}/${SubSess}/anat"
+		
+		if [ ! -d "${Anatomy_directory}" ]; then
+			echo "Subject: ${sub}, session: ${sess} data does not exist. Skipping..."
+			continue
+		else
+            echo "Checking into subject: ${sub}, session: ${sess} dataset..."
+		fi
+		
 		B1_directory_SPM="${MainPath}/derivatives/SPM/${SubSess}/fmap"
 		B1_directory_Siemens="${MainPath}/derivatives/SiemensHealthineers/${SubSess}/fmap"
 		main_output_directory_fsl="${MainPath}/derivatives/FSL/${SubSess}"
@@ -153,7 +158,7 @@ for sub in "${subjects[@]}"; do
 				B1anat=$(find ${B1_directory_Siemens} -type f -name "*acq-anat*TB1TFL.nii.gz")
 				B1map=$(find ${B1_directory_Siemens} -type f -name "*acq-famp*TB1TFL.nii.gz")
 				
-				#Get from the corresponding json file the flip angle
+				#Get the flip angle from the corresponding json file
 				json_b1map="${B1map%%.*}"
 				flipangle_rfmap=$(jq 'select(.FlipAngle != null) | .FlipAngle' "${json_b1map}.json")
 				scaleval=$(echo ""${flipangle_rfmap}" * 10" | bc )
