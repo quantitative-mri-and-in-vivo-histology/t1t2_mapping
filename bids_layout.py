@@ -35,15 +35,29 @@ else:
 	sys.exit(1)
 
 layout = BIDSLayout(dataset_path)
-# Get all subjects and sessions
+# Get all subjects
 subjects = layout.get_subjects()
-sessions = layout.get_sessions()
 
-# Create a dictionary to store the results
-result = {
-    'subjects': subjects,
-    'sessions': sessions
-}
+results = []
 
+for subject in subjects:
+	sessions = layout.get_sessions(subject=subject)
+	if sessions:  # Only add subjects with existing sessions
+		for session in sessions:
+			valid_runs = layout.get(return_type='id', subject=subject, session=session, suffix='T2w',
+                                    target="run", part="mag", extension="nii.gz")
+			runs = valid_runs
+
+			if len(runs) == 0:
+				runs = [None]
+
+			# Create a dictionary to store the results
+			results.append({
+                'subject': subject,
+                'session': session,
+                'runs': runs
+            })
+            
 # Output the result as JSON (this will be captured in the bash script)
-print(json.dumps(result))
+with open('sub_ses_run_description.json', 'w') as outfile:
+    json.dump(results, outfile, indent=4)
