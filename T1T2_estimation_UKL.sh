@@ -38,11 +38,10 @@ json_file="sub_ses_run_description.json"
 # Use jq to parse the JSON
 combinations=$(jq -r '.[] | "\(.subject) \(.session) \(.runs[])"' "$json_file" | sort -u)
 
-#IFS=$'\n'  # Set the internal field separator to newline to handle spaces properly
-for combination in "${combinations[@]}"; do
+IFS=$'\n'  # Set the internal field separator to newline to handle spaces properly
+for combination in $combinations; do
 	# Split the combination into subject, session, and run
 	IFS=' ' read -r subject session run <<< "$combination"
-	
 	SubSess="sub-${subject}/ses-${session}"		
 	Anatomy_directory="${MainPath}/${SubSess}/anat"
 			
@@ -82,7 +81,7 @@ for combination in "${combinations[@]}"; do
 		spgr_ssfp_files=($(find "${Anatomy_directory}" -type f \( -name "*acq-t2Ssfp*A*_run-$run*.nii.gz" \)))
 	else
 		spgr_ssfp_files=($(find "${Anatomy_directory}" -type f \( -name "*acq-t2Ssfp*A*.nii.gz" \)))
-    fi
+    	fi
 	
 	filename=$(basename "${spgr_ssfp_files[1]}")
 	if [[ "$filename" == *acq-t2Ssfp1* || "$filename" == *acq-t2Ssfp2* ]]; then
