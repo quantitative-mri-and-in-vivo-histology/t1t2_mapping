@@ -8,4 +8,4 @@ To make this code to run is advisable that:
 3. The code is bash-based (Ubuntu 24.04 - T1T2_estimation_UKL.sh) but requires of a python code (bids_layout.py) to run properly; therefore:
    a. Required packages: python >= 3.0, quit software (from https://github.com/spinicist/QUIT), pybids and FSL.
    b. The main code (the bash code) can run either in conda environment or normal environment.
-4. To run the code, write in bash: ./T1T2_estimation_UKL.sh (any other previous tree folder - see point 1) (boolen: true/false). While the first input will look through all the subjects, sessions and runs (up to two runs), the second argument is used to re-scale the GRE and SSFP data.
+4. To run the code, write in bash: ./T1T2_estimation_UKL.sh (any other previous tree folder - see point 1). The first input helps the .py code to look through all the subjects, sessions and runs.
